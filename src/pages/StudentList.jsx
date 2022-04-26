@@ -8,7 +8,7 @@ import {AiFillDelete} from 'react-icons/ai'
 function StudentList() {
     
   const [isModalOpen, setModalOpen] = useState(false);
-  const { students, setStudents, fetchData } = useContext(StudentContext);
+  const { students, setStudents, fetchData, toBeDeleted, setToBeDeleted, isCheckingToUpdateOrDelete, setCheckingToUpdateOrDelete} = useContext(StudentContext);
   const [checkAll, setCheckAll] = useState(false);
   const [isModifying, setModifying] = useState(false);
   const [isUpdating, setUpdating] = useState(false);
@@ -80,6 +80,20 @@ function StudentList() {
             setUpdating(false);
         }
     }, [students])
+
+    useEffect(() => {
+
+        let toDelete = []
+
+        students.forEach(stud => {
+
+            if (stud.isChecked)
+                toDelete.push(stud.id);
+        })
+
+        setToBeDeleted(toDelete);
+
+    }, [isCheckingToUpdateOrDelete])
     
   return (
     <>
@@ -138,6 +152,7 @@ function StudentList() {
                                     return {...stud, id: stud.id, isChecked: !checkAll}
                                 });
                                 setStudents(newArr);
+                                setCheckingToUpdateOrDelete(prev => !prev);
                             }} 
                             type="checkbox" name="" id="" />
                     </th>
@@ -167,6 +182,7 @@ function StudentList() {
                                         });
                                         
                                         setStudents(array);
+                                        setCheckingToUpdateOrDelete(prev => !prev)
                                     }}
                                     value={student.isChecked}
                                     checked={student.isChecked}
