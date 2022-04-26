@@ -29,10 +29,7 @@ function Modal({isModalOpen, setModalOpen}) {
       y: isMatch ?  '0%' : '0%'
     }, 
     exit: {
-      opacity: isMatch ? 0 : 0,
-      transition: {
-        duration: 5
-      }
+      y: isMatch ? '270%' : '-270%',
     }
   }
 
@@ -70,21 +67,21 @@ function Modal({isModalOpen, setModalOpen}) {
 
   return (
     <>
-     <motion.div
+    <AnimatePresence>
+     {isModalOpen && <motion.div 
+        key={isModalOpen}  
         onClick={(e) => { 
  
           setModalOpen(false)
         }} 
         className="fixed bottom-0 bg-gray-500 bg-opacity-50 w-screen h-full overflow-auto flex flex-col justify-end sm:justify-center sm:items-center">
 
-        <AnimatePresence>
-
         <motion.div 
-            key={isModalOpen}   
             onClick={(e) => e.stopPropagation()}
             variants={modalVariants}
             initial="initial"
             animate="animate"
+            exit="exit"
             className="custom-xs:bottom w-full sm:h-max  sm:max-w-[35rem] bg-gray-100 border border-gray-200 shadow-md rounded-md p-4 flex flex-col gap-5">
 
             <h1 className="text-2xl font-bold text-gray-900">New Student</h1>
@@ -142,8 +139,8 @@ function Modal({isModalOpen, setModalOpen}) {
                 Add
             </button>
         </motion.div>
-        </AnimatePresence>
-    </motion.div> 
+    </motion.div> }
+    </AnimatePresence>
     </>
   )
 }

@@ -3,8 +3,11 @@
 @tailwind utilities;
 
 
+body {
+    @apply min-h-screen
+}
 main {
-    @apply w-full h-full flex flex-col justify-start px-[1rem] py-[2rem] items-start gap-[1rem] 
+    @apply w-full h-full flex flex-col justify-start px-[1rem] py-[2rem] items-start gap-[1.5rem] 
 }
 table {
     @apply w-full
@@ -54,6 +57,14 @@ table tr:nth-child(odd) {
 
 .btn--primary-action {
     @apply border border-gray-300 p-2 shadow-sm rounded-md
+}
+
+.btn--danger {
+    @apply hover:text-gray-100 hover:bg-red-500 hover:border-none transition-all;
+}
+
+.btn--modify {
+    @apply hover:text-gray-900 hover:bg-blue-500 hover:border-none transition-all;
 }
 
 /* #REGION (Select) or (Dropdowns) */

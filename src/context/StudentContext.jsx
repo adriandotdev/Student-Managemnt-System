@@ -12,6 +12,8 @@ function StudentContextProvider({ children }) {
   const [isCheckingToUpdateOrDelete, setCheckingToUpdateOrDelete] = useState(false);
   const [toBeDeleted, setToBeDeleted] = useState([]);
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
   const [state, dispatch] = useReducer(addStudentModalReducers, {
     isChecked: true,
     givenName: "",
@@ -23,7 +25,7 @@ function StudentContextProvider({ children }) {
   });
 
   return (
-    <StudentContext.Provider value={{state, dispatch, students, setStudents, fetchData, setFetchData, toBeDeleted, setToBeDeleted, isCheckingToUpdateOrDelete, setCheckingToUpdateOrDelete}}>
+    <StudentContext.Provider value={{state, dispatch, students, setStudents, fetchData, setFetchData, toBeDeleted, setToBeDeleted, isCheckingToUpdateOrDelete, setCheckingToUpdateOrDelete, confirmModalOpen, setConfirmModalOpen}}>
         { children }
     </StudentContext.Provider>
   )

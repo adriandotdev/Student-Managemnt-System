@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { StudentContext } from '../context/StudentContext'
 import {AiFillEdit} from 'react-icons/ai'
 import {AiFillDelete} from 'react-icons/ai'
+import ConfirmModal from '../components/ConfirmModal'
 
 function StudentList() {
     
   const [isModalOpen, setModalOpen] = useState(false);
-  const { students, setStudents, fetchData, toBeDeleted, setToBeDeleted, isCheckingToUpdateOrDelete, setCheckingToUpdateOrDelete} = useContext(StudentContext);
+  const { students, setStudents, fetchData, toBeDeleted, setToBeDeleted, isCheckingToUpdateOrDelete, setCheckingToUpdateOrDelete, setConfirmModalOpen} = useContext(StudentContext);
   const [checkAll, setCheckAll] = useState(false);
   const [isModifying, setModifying] = useState(false);
   const [isUpdating, setUpdating] = useState(false);
@@ -21,14 +22,14 @@ function StudentList() {
           opacity: 1,
           transition: {
             beforeChildren: true,
-            staggerChildren: .1
+            staggerChildren: .01
           }
       },
       exit: {
           opacity: 0,
           transition: {
               beforeChildren: true,
-              staggerChildren: .1
+              staggerChildren: .01
           }
       }
   }
@@ -60,8 +61,9 @@ function StudentList() {
     }
 
     useEffect(() => {
-        console.log("RUNNING");
+
         getStudents();
+        setCheckAll(false);
     }, [fetchData])
     
     useEffect(() => {
@@ -98,15 +100,15 @@ function StudentList() {
   return (
     <>
       <header className="bg-gray-900 px-4 py-3 flex items-center gap-4 flex-wrap-reverse">
-          <button 
-                className="btn--primary" 
+            <button 
+                className="btn--primary rounded-full" 
                 onClick={() => setModalOpen(true)}>
                     New
             </button>
             <h1 className="h1--secondary">Student Management System</h1>
       </header>
       <main>
-            <header className="flex flex-wrap items-center gap-2">
+            <header className="flex flex-wrap items-center gap-4">
 
                 <h1 className="h1--primary">
                     {students.length > 0 ? "Enrolled Students" 
@@ -122,14 +124,16 @@ function StudentList() {
                         className="flex items-center gap-2">
 
                         <motion.button 
+                            onClick={() => setConfirmModalOpen(true)}
                             variants={btnActionVariants}
-                            className="btn--primary-action flex items-center gap-1">
+                            className="btn--primary-action btn--danger flex items-center gap-1">
                             <AiFillDelete />
                             Delete
                         </motion.button>
+
                         { isUpdating && isModifying && <motion.button 
                             variants={btnActionVariants}
-                            className="btn--primary-action flex items-center gap-1">
+                            className="btn--primary-action btn--modify flex items-center gap-1">
                             <AiFillEdit />
                             Edit Info
                         </motion.button> }
@@ -139,7 +143,7 @@ function StudentList() {
             </header>
 
             { students && 
-            <table className="w-full">
+            <table className="w-full sm:max-w-full overflow-x-scroll">
                 <thead>
                     <th className="table--header">
                         <input 
@@ -200,7 +204,8 @@ function StudentList() {
                 }
             </table> }
         </main>
-        {isModalOpen && <Modal isModalOpen={isModalOpen} setModalOpen={setModalOpen}/> }
+        <Modal isModalOpen={isModalOpen} setModalOpen={setModalOpen}/> 
+        <ConfirmModal/>
     </>
   )
 }
