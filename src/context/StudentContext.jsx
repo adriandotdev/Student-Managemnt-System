@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useState, useReducer } from 'react'
 import addStudentModalReducers from '../reducers/addStudentModalReducers';
 import studentReducers from '../reducers/studentReducers';
 
@@ -6,8 +6,9 @@ const StudentContext = React.createContext(null);
 
 function StudentContextProvider({ children }) {
 
-   const [students, addStudents] = useReducer(studentReducers, [])
+  const [students, setStudents] = useState([]);
   const [state, dispatch] = useReducer(addStudentModalReducers, {
+    isChecked: true,
     givenName: "",
     middleName: "",
     lastName: "",
@@ -17,7 +18,7 @@ function StudentContextProvider({ children }) {
   });
 
   return (
-    <StudentContext.Provider value={{state, dispatch, students, addStudents}}>
+    <StudentContext.Provider value={{state, dispatch, students, setStudents}}>
         { children }
     </StudentContext.Provider>
   )

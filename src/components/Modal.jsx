@@ -8,7 +8,7 @@ import InputSection from '../components/InputSection'
 
 function Modal({isModalOpen, setModalOpen}) {
 
-  const {state, dispatch, addStudents} = useContext(StudentContext);
+  const {state, dispatch, setStudents} = useContext(StudentContext);
   let isMatch = useBreakpoint(640); // custom hook
 
   const [isFieldCompleted, setFieldCompleted] = useState(false);
@@ -35,6 +35,36 @@ function Modal({isModalOpen, setModalOpen}) {
       }
     }
   }
+
+
+  const getStudents = () => {
+    fetch('http://localhost:5000/students')
+        .then((res) => res.json())
+        .then(value => setStudents(JSON.parse(value)));
+  }
+
+
+  const newStudent = async () => {
+
+    try {
+      const res = await fetch('http://localhost:5000/new-student', {
+          body: JSON.stringify(state),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+      })
+
+      if (res) {
+        getStudents();
+        dispatch({ type: 'reset' });
+      }
+    }
+    catch(_err) {
+      console.log(_err);
+    }
+  }
+
   return (
     <>
      <motion.div
@@ -56,13 +86,14 @@ function Modal({isModalOpen, setModalOpen}) {
 
             <h1 className="text-2xl font-bold text-gray-900">New Student</h1>
 
-            <form className="flex flex-col gap-1 sm:grid sm:grid-cols-3 sm:gap-2" action="">
+            <form 
+              className="flex flex-col gap-1 sm:grid sm:grid-cols-3 sm:gap-2">
 
-              <InputSection label="Given Name:" labelFor="given-name" type="givenName" value={state.givenName} />
+              <InputSection label="Given Name:" labelFor="givenName" type="givenName" value={state.givenName} />
 
-              <InputSection label="Middle Name:" labelFor="middle-name" type="middleName" value={state.middleName} />
+              <InputSection label="Middle Name:" labelFor="middleName" type="middleName" value={state.middleName} />
 
-              <InputSection label="Last Name:" labelFor="last-name" type="lastName" value={state.lastName} />
+              <InputSection label="Last Name:" labelFor="lastName" type="lastName" value={state.lastName} />
 
               <InputSection label="School:" labelFor="school" type="school" 
               value={state.school} additionalClassName="sm:row-start-2 sm:col-start-1 sm:col-end-4"/>
@@ -102,8 +133,7 @@ function Modal({isModalOpen, setModalOpen}) {
                 onClick={
                   isFieldCompleted ? 
                   () => {
-                    addStudents({type: 'addStudent', payload: state}); 
-                    dispatch({type: "reset"}); 
+                    newStudent();
                   } : null} 
                   className="btn--primary w-full">
                 Add
