@@ -8,7 +8,7 @@ import InputSection from '../components/InputSection'
 
 function Modal({isModalOpen, setModalOpen}) {
 
-  const {state, dispatch, setStudents} = useContext(StudentContext);
+  const { state, dispatch, setStudents, setFetchData } = useContext(StudentContext);
   let isMatch = useBreakpoint(640); // custom hook
 
   const [isFieldCompleted, setFieldCompleted] = useState(false);
@@ -40,7 +40,10 @@ function Modal({isModalOpen, setModalOpen}) {
   const getStudents = () => {
     fetch('http://localhost:5000/students')
         .then((res) => res.json())
-        .then(value => setStudents(JSON.parse(value)));
+        .then(value => {
+          setStudents(JSON.parse(value));
+          setFetchData(prev => !prev);
+        });
   }
 
 

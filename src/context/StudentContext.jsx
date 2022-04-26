@@ -7,6 +7,7 @@ const StudentContext = React.createContext(null);
 function StudentContextProvider({ children }) {
 
   const [students, setStudents] = useState([]);
+  const [fetchData, setFetchData] = useState(false);
   const [state, dispatch] = useReducer(addStudentModalReducers, {
     isChecked: true,
     givenName: "",
@@ -18,7 +19,7 @@ function StudentContextProvider({ children }) {
   });
 
   return (
-    <StudentContext.Provider value={{state, dispatch, students, setStudents}}>
+    <StudentContext.Provider value={{state, dispatch, students, setStudents, fetchData, setFetchData}}>
         { children }
     </StudentContext.Provider>
   )

@@ -7,12 +7,11 @@ import {AiFillDelete} from 'react-icons/ai'
 
 function StudentList() {
     
-
   const [isModalOpen, setModalOpen] = useState(false);
-  const { students, setStudents } = useContext(StudentContext);
+  const { students, setStudents, fetchData } = useContext(StudentContext);
   const [checkAll, setCheckAll] = useState(false);
   const [isModifying, setModifying] = useState(false);
-  
+  const [isUpdating, setUpdating] = useState(false);
 
   const btnActionVariants = {
       initial: {
@@ -34,6 +33,19 @@ function StudentList() {
       }
   }
 
+  const countItemToBeEdited = () => {
+
+    let count = 0;
+
+    students.forEach(stud => { 
+        
+        if (stud.isChecked)
+            count++;
+    });
+
+    return count;
+  }
+  
   const getStudents = () => {
     fetch('http://localhost:5000/students')
         .then((res) => res.json())
@@ -50,12 +62,25 @@ function StudentList() {
     useEffect(() => {
         console.log("RUNNING");
         getStudents();
-    }, [])
+    }, [fetchData])
     
     useEffect(() => {
 
-        console.log("CHECK ALL RUN");
-    }, [checkAll])
+        if (countItemToBeEdited() > 0) {
+
+            setModifying(true);
+            setUpdating(true);
+
+            if (countItemToBeEdited() > 1) {
+                setUpdating(false);
+            }
+        }
+        else {
+            setModifying(false);
+            setUpdating(false);
+        }
+    }, [students])
+    
   return (
     <>
       <header className="bg-gray-900 px-4 py-3 flex items-center gap-4 flex-wrap-reverse">
@@ -75,7 +100,7 @@ function StudentList() {
                 </h1>
 
                 <AnimatePresence>
-                    {isModifying && <motion.section
+                    { isModifying && <motion.section
                         variants={btnActionVariants} 
                         initial="initial"
                         animate="animate"
@@ -88,12 +113,12 @@ function StudentList() {
                             <AiFillDelete />
                             Delete
                         </motion.button>
-                        <motion.button 
+                        { isUpdating && isModifying && <motion.button 
                             variants={btnActionVariants}
                             className="btn--primary-action flex items-center gap-1">
                             <AiFillEdit />
                             Edit Info
-                        </motion.button>
+                        </motion.button> }
                     </motion.section> }
                 </AnimatePresence>
                 
@@ -132,17 +157,16 @@ function StudentList() {
                                 <input 
                                     onChange={(e) => {
                                         
-                                        setCheckAll(false)
-
+                                        setCheckAll(false);
+                                        
                                         let array = students.map(stud => {
                                             if (student.id == stud.id)
                                                 return { ...stud, isChecked: !stud.isChecked, id: stud.id }
 
                                             return { ...stud, id: stud.id }
-                                        })
+                                        });
                                         
-                                        setStudents(array)
-                                        
+                                        setStudents(array);
                                     }}
                                     value={student.isChecked}
                                     checked={student.isChecked}
